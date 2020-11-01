@@ -10,16 +10,16 @@ public class FreeDiskSpaceServer {
     public static final String CHARSET_NAME = "UTF8";
 
     public FreeDiskSpaceServer() {
-        try {
-            ServerSocket server = new ServerSocket(PORT);
+        try(ServerSocket server = new ServerSocket(PORT)) {
             System.out.println("Server running");
             while (true) {
-                try (Socket client = server.accept();) {
+                try (Socket client = server.accept()) {
+                    System.out.printf("Client connected: %s%n",client.getInetAddress().toString());
                     BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream(), CHARSET_NAME));
                     BufferedWriter out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream(), CHARSET_NAME));
 
                     String line = in.readLine();
-                    System.out.println("Input" + line);
+                    System.out.printf("Input: \"%s\"%n",line);
                     String res ="";
                     try {
                         res = getFreeDiskSpace(line);
@@ -27,6 +27,7 @@ public class FreeDiskSpaceServer {
                         res = "Ungültiger Pfad";
                     }
                     out.write(res + "\n");
+                    System.out.printf("Output: \"%s\"%n",res);
                     out.newLine();
                     out.flush();
 
@@ -43,7 +44,7 @@ public class FreeDiskSpaceServer {
             Path path = Paths.get(pathString);
             long totalSpace = Files.getFileStore(path).getTotalSpace();
             long freeSpace = Files.getFileStore(path).getUnallocatedSpace();
-            return String.format("Info for path %s: %d bytes of %d free", pathString, freeSpace, totalSpace);
+            return String.format("Info for path \"%s\": %d bytes of %d free", pathString, freeSpace, totalSpace);
         }
 
     public static void main(String[] args) {
