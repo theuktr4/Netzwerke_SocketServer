@@ -25,18 +25,19 @@ public class FreeDiskSpaceServer {
                         res = getFreeDiskSpace(line);
                     } catch (IOException pathfail) {
                         res = "Ungültiger Pfad";
+                        System.err.println(res);
                     }
                     out.write(res + "\n");
-                    System.out.printf("Output: \"%s\"%n", res);
+                    System.err.printf("Output: \"%s\"%n", res);
                     out.newLine();
                     out.flush();
 
                 } catch (IOException ex) {
-                    System.out.println(ex);
+                    System.err.println(ex);
                 }
             }
         } catch (IOException e) {
-            System.out.println("Server closed");
+            System.err.println("Server closed");
         }
     }
 
